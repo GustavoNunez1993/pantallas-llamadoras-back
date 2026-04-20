@@ -80,7 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUsername(),
                         request.getPassword()
                 )
         );
@@ -88,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = userRepository
                 .findByEmailAndActiveTrue(
-                        request.getEmail()
+                        request.getUsername()
                 )
                 .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas"));
 

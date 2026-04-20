@@ -15,7 +15,7 @@
     <groupId>com.datalock</groupId>
     <artifactId>datalock</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>datalock</name>
+    <name>pantallas-llamadoras</name>
     <description>Proyecto backend datalock con Spring Boot para pantallas llamadoras</description>
 
     <properties>

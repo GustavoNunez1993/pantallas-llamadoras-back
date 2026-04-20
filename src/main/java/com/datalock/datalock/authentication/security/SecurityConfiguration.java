@@ -54,13 +54,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // BANCARD CALLBACK (OBLIGATORIO)
-                        .requestMatchers("/payment/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tipo-vehiculos/list").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categorias-empresas/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/conductor/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/conductor/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/productos-page/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/documentos-conductor/**").permitAll()
                         .requestMatchers("/api/solicitudes-api/**").permitAll()
                         .requestMatchers("/imagenes/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
