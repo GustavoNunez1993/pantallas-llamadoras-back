@@ -33,18 +33,23 @@ public class SeccionesServiceImpl implements SeccionesService {
     }
 
     @Override
+    public List<SeccionesJpaModel> listarActivos() {
+        return repository.findByActiveTrueOrderByDescripcionAsc();
+    }
+
+    @Override
     public SeccionesJpaModel actualizar(UUID id, SeccionesJpaModel datos) {
         SeccionesJpaModel existente = obtenerPorId(id);
         existente.setCodigo(datos.getCodigo());
         existente.setDescripcion(datos.getDescripcion());
+        existente.setTieneServicios(datos.getTieneServicios());
         return repository.save(existente);
     }
 
     @Override
     public void eliminar(UUID id) {
-        if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Sección no encontrada: " + id);
-        }
-        repository.deleteById(id);
+        SeccionesJpaModel existente = obtenerPorId(id);
+        existente.softDelete(); // ← usa el soft delete del BaseDbModel en lugar de deleteById
+        repository.save(existente);
     }
 }

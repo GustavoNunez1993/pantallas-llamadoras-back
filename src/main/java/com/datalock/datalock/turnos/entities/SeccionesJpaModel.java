@@ -17,4 +17,9 @@ public class SeccionesJpaModel extends BaseDbModel {
     @Column(name = "descripcion", length = 150, nullable = false)
     private String descripcion;
 
+    @Column(name = "tiene_servicios")
+    private Boolean tieneServicios;
+
+
+
 }

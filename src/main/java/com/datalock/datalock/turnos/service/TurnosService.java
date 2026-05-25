@@ -23,6 +23,8 @@ public interface TurnosService {
 
     List<TurnosJpaModel> listarPorSeccionYFecha(UUID seccionId, LocalDate fecha);
 
+    TurnosJpaModel modificarTurno(UUID turnoId, UserJpaModel usuario, com.datalock.datalock.turnos.dto.request.ModificarTurnoRequest request);
+
     TurnosJpaModel llamarTurno(UUID turnoId, UserJpaModel usuario, String moduloActual, String pantallaDestino);
 
     TurnosJpaModel iniciarAtencion(UUID turnoId, UserJpaModel usuario);

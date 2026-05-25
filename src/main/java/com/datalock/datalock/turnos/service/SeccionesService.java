@@ -1,8 +1,6 @@
 package com.datalock.datalock.turnos.service;
 
-
 import com.datalock.datalock.turnos.entities.SeccionesJpaModel;
-import com.datalock.datalock.turnos.entities.TurnosJpaModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +12,8 @@ public interface SeccionesService {
     SeccionesJpaModel obtenerPorId(UUID id);
 
     List<SeccionesJpaModel> listarTodos();
+
+    List<SeccionesJpaModel> listarActivos(); // ← nuevo
 
     SeccionesJpaModel actualizar(UUID id, SeccionesJpaModel secciones);
 

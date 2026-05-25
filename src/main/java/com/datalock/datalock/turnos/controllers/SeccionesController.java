@@ -21,6 +21,11 @@ public class SeccionesController {
         return service.listarTodos();
     }
 
+    @GetMapping("/activos")
+    public List<SeccionesJpaModel> listarActivos() {
+        return service.listarActivos();
+    }
+
     @GetMapping("/{id}")
     public SeccionesJpaModel obtener(@PathVariable UUID id) {
         return service.obtenerPorId(id);

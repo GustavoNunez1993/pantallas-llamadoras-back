@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                         // BANCARD CALLBACK (OBLIGATORIO)
                         .requestMatchers("/api/solicitudes-api/**").permitAll()
                         .requestMatchers("/imagenes/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         .anyRequest().authenticated()

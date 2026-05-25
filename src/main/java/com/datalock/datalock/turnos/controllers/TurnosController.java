@@ -10,6 +10,7 @@ import com.datalock.datalock.turnos.entities.TurnosJpaModel;
 import com.datalock.datalock.turnos.mappers.TurnosMapper;
 import com.datalock.datalock.turnos.repository.SeccionesJpaRepository;
 import com.datalock.datalock.turnos.service.TurnosService;
+import com.datalock.datalock.turnos.websocket.TurnosWebSocketHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,6 +44,7 @@ public class TurnosController {
 
     private final TurnosService turnosService;
     private final SeccionesJpaRepository seccionesJpaRepository;
+    private final TurnosWebSocketHandler turnosWebSocketHandler;
 
     @PostMapping
     @Operation(
@@ -80,7 +82,9 @@ public class TurnosController {
         turno.setEstadoTurno(EstadoTurnoEnum.EN_ESPERA);
 
         TurnosJpaModel guardado = turnosService.crear(turno, usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(TurnosMapper.toResponse(guardado));
+        TurnoResponse response = TurnosMapper.toResponse(guardado);
+        turnosWebSocketHandler.broadcast("LLAMADO", response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
@@ -117,6 +121,18 @@ public class TurnosController {
     ) {
         TurnosJpaModel turno = turnosService.obtenerPorNumeroTurno(numeroTurno);
         return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TurnoResponse> modificarTurno(
+            @PathVariable UUID id,
+            @RequestBody ModificarTurnoRequest request,
+            @AuthenticationPrincipal UserJpaModel usuario
+    ) {
+        TurnosJpaModel turno = turnosService.modificarTurno(id, usuario, request);
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_MODIFICADO", response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -208,7 +224,9 @@ public class TurnosController {
                 request.getPantallaDestino()
         );
 
-        return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_LLAMADO", response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/iniciar-atencion")
@@ -228,7 +246,9 @@ public class TurnosController {
             @AuthenticationPrincipal UserJpaModel usuario
     ) {
         TurnosJpaModel turno = turnosService.iniciarAtencion(id, usuario);
-        return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_INICIO_ATENCION", response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/finalizar")
@@ -254,7 +274,9 @@ public class TurnosController {
     ) {
         String observacion = request != null ? request.getObservacion() : null;
         TurnosJpaModel turno = turnosService.finalizarAtencion(id, usuario, observacion);
-        return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_FINALIZADO", response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/cancelar")
@@ -280,7 +302,9 @@ public class TurnosController {
     ) {
         String observacion = request != null ? request.getObservacion() : null;
         TurnosJpaModel turno = turnosService.cancelarTurno(id, usuario, observacion);
-        return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_CANCELADO", response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/ausente")
@@ -306,6 +330,8 @@ public class TurnosController {
     ) {
         String observacion = request != null ? request.getObservacion() : null;
         TurnosJpaModel turno = turnosService.marcarAusente(id, usuario, observacion);
-        return ResponseEntity.ok(TurnosMapper.toResponse(turno));
+        TurnoResponse response = TurnosMapper.toResponse(turno);
+        turnosWebSocketHandler.broadcast("TURNO_AUSENTE", response);
+        return ResponseEntity.ok(response);
     }
 }

@@ -2,6 +2,7 @@ package com.datalock.datalock.turnos.service.impl;
 
 
 import com.datalock.datalock.authentication.entities.UserJpaModel;
+import com.datalock.datalock.turnos.dto.request.ModificarTurnoRequest;
 import com.datalock.datalock.turnos.entities.AccionTurnoHistorialEnum;
 import com.datalock.datalock.turnos.entities.EstadoTurnoEnum;
 import com.datalock.datalock.turnos.entities.TurnoHistorialJpaModel;
@@ -77,6 +78,32 @@ public class TurnosServiceImpl implements TurnosService {
     @Transactional(readOnly = true)
     public List<TurnosJpaModel> listarPorSeccionYFecha(UUID seccionId, LocalDate fecha) {
         return turnosJpaRepository.findBySeccionIdAndFechaTurnoOrderByNumeroSecuenciaAsc(seccionId, fecha);
+    }
+
+    @Override
+    public TurnosJpaModel modificarTurno(UUID turnoId, UserJpaModel usuario, ModificarTurnoRequest request) {
+        TurnosJpaModel turno = obtenerPorId(turnoId);
+
+        if (request.getPrioridadTurno() != null) {
+            turno.setPrioridadTurno(request.getPrioridadTurno());
+        }
+
+        turno.setNombreCliente(request.getNombreCliente());
+        turno.setDocumentoCliente(request.getDocumentoCliente());
+        turno.setObservacion(request.getObservacion());
+
+        TurnosJpaModel turnoGuardado = turnosJpaRepository.save(turno);
+
+        turnoHistorialService.registrarHistorial(
+                turnoGuardado,
+                turnoGuardado.getEstadoTurno(),
+                turnoGuardado.getEstadoTurno(),
+                AccionTurnoHistorialEnum.ACTUALIZACION,
+                usuario,
+                "Turno actualizado"
+        );
+
+        return turnoGuardado;
     }
 
     @Override
